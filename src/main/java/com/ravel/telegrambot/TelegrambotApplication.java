@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import bot.Bot;
 
 @SpringBootApplication
-public class TelegrambotTask1Application {
+public class TelegrambotApplication {
 
 	public static void main(String[] args) {
 		initializeBot();
@@ -16,7 +16,7 @@ public class TelegrambotTask1Application {
 	
 	private static void initializeBot() {
 		ApiContextInitializer.init();
-		TelegramBotsApi telegramBotsApi = createLongPollingTelegramBotsApi();
+		TelegramBotsApi telegramBotsApi = new TelegramBotsApi();;
 		registerBot(telegramBotsApi);
 	}
 
@@ -26,10 +26,6 @@ public class TelegrambotTask1Application {
 		} catch (TelegramApiException e) {
 
 		}
-	}
-
-	private static TelegramBotsApi createLongPollingTelegramBotsApi() {
-		return new TelegramBotsApi();
 	}
 
 }
