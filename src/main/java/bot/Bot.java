@@ -2,27 +2,30 @@ package bot;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public class Bot extends TelegramLongPollingBot {
+import services.ResponseService;
 
+public class Bot extends TelegramLongPollingBot {
+	
+	private ResponseService service = new ResponseService(); 
+	
 	@Override
-	public void onUpdateReceived(Update update) {
+	public void onUpdateReceived(Update update) {	
 		
-		if (update.hasMessage() && update.getMessage().hasText()) {
-			SendMessage message = createSendMessageWithMandatoryFields(update);
-			send(message);
-			
+		if (update.hasMessage()) {
+			Message message = update.getMessage();
+			if(message.hasText()) {
+				String responseText = service.lookForCommands(message);
+				SendMessage response = new SendMessage();
+				response.setChatId(message.getChatId()).setText(responseText);
+				send(response);
+			}
 		}
 	}
 
-	public SendMessage createSendMessageWithMandatoryFields(Update update) {
-		SendMessage message = new SendMessage().setChatId(
-				update.getMessage().getChatId()).setText(update.getMessage().getText());
-		return message;
-	}
-	
 	public void send(SendMessage message) {
 		try {
 			execute(message);
